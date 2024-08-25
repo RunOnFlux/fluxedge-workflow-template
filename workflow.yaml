@@ -5,7 +5,7 @@ metadata:
 spec:
   serviceAccountName: batch-job-sa
   nodeSelector:
-    kubernetes.io/hostname: fe-na-dev-agent-1
+    kubernetes.io/hostname: "" # This is the node the workflow will run on. This will be provided by FluxEdge dynamically
   entrypoint: main
   arguments:
     parameters:
@@ -14,6 +14,7 @@ spec:
       - name: repoBranch
         value: "" # Put in the branch you want to deploy
       # Node Selector will be dynamically added by FluxEdge
+      # Deployment Information will be dynmically added by FluxEdge
   templates:
   - name: main
     steps:
@@ -32,6 +33,8 @@ spec:
             parameters:
               - name: nodeSelector
                 value: "{{workflow.parameters.nodeSelector}}"
+              - name: deploymentInformation
+                value: "{{workflow.parameters.deploymentInformation}}"
             artifacts:
               - name: repo
                 from: "{{steps.clone-repo.outputs.artifacts.repo}}"
@@ -51,6 +54,7 @@ spec:
     container:
       image: alpine/git
       command: [sh, -c]
+      # The arg for `cp` will need to be updated based on how the secret is read in from the file. This would need to be standardized and probably inserted by FluxEdge
       args: [
         "mkdir -p ~/.ssh && cp /secret/ssh-privatekey ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa && \
         ssh-keyscan -H github.com >> ~/.ssh/known_hosts && \
@@ -74,6 +78,7 @@ spec:
     inputs:
       parameters:
         - name: nodeSelector
+        - name: deploymentInformation
       artifacts:
         - name: repo
           path: /workspace
@@ -84,7 +89,8 @@ spec:
         #!/bin/sh
         cd /workspace/dev/overlay/dev
         # Replace placeholders in kustomization.yaml with actual values
-        sed -i "s/\NODE_SELECTOR/{{inputs.parameters.nodeSelector}}/g" deployment-patch.yaml 
+        sed -i "s/\NODE_SELECTOR/{{inputs.parameters.nodeSelector}}/g" deployment-patch.yaml
+        sed -i "s/\DEPLOYMENT_INFORMATION/{{inputs.parameters.deploymentInformation}}/g" kustomization.yaml 
         
         # Generate the manifests using kustomize
         kustomize build . -o /workspace/modified
