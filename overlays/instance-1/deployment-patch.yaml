@@ -3,6 +3,13 @@ kind: Deployment
 metadata:
   name: hello-world-deployment
 spec:
+  selector:
+    matchLabels:
+      name: DEPLOYMENT_INFORMATIONhello-world-deployment
+  template:
+    metadata:
+      labels:
+        name: DEPLOYMENT_INFORMATIONhello-world-deployment
   template:
     spec:
       nodeSelector:

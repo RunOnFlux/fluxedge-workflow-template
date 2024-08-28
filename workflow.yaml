@@ -90,6 +90,7 @@ spec:
         cd /workspace/dev/overlay/dev
         # Replace placeholders in kustomization.yaml with actual values
         sed -i "s/\NODE_SELECTOR/{{inputs.parameters.nodeSelector}}/g" deployment-patch.yaml
+        sed -i "s/\DEPLOYMENT_INFORMATION/{{inputs.parameters.deploymentInformation}}/g" deployment-patch.yaml 
         sed -i "s/\DEPLOYMENT_INFORMATION/{{inputs.parameters.deploymentInformation}}/g" kustomization.yaml 
         
         # Generate the manifests using kustomize
