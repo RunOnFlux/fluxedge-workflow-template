@@ -10,7 +10,6 @@ spec:
     metadata:
       labels:
         name: DEPLOYMENT_INFORMATIONhello-world-deployment
-  template:
     spec:
       nodeSelector:
         kubernetes.io/hostname: NODE_SELECTOR # This is a placeholder that will get replaced
