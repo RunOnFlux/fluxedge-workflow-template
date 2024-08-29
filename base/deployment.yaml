@@ -6,11 +6,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      name: hello-world-deployment
+      deploymentInformation: hello-world-deployment
   template:
     metadata:
       labels:
-        name: hello-world-deployment
+        deploymentInformation: hello-world-deployment
     spec:
       containers:
       - name: hello-world

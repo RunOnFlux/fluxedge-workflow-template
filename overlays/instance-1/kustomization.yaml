@@ -5,3 +5,4 @@ resources:
 namePrefix: DEPLOYMENT_INFORMATION # This will prefix the name of everything with whatever is provided (you may need to add a `-` or something similar at the end so you know when our information ends)
 patchesStrategicMerge:
   - deployment-patch.yaml
+  - service-patch.yaml
